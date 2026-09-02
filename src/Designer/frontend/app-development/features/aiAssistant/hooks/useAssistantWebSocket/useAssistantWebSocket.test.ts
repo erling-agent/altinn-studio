@@ -225,7 +225,7 @@ describe('useAssistantWebSocket', () => {
 
       await expect(
         result.current.respondToPermission('session-1', 'request-1', true),
-      ).rejects.toThrow('No active SignalR connection to Altinity hub');
+      ).rejects.toThrow('No active SignalR connection to Assistant hub');
       expect(mockInvoke).not.toHaveBeenCalled();
     });
   });
