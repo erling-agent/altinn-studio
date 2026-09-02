@@ -85,4 +85,4 @@ class TestOptIn:
 
         monkeypatch.setattr("benchmarks.preview_check._render_results", raise_unavailable)
 
-        assert run("altinity_session_abc123", ["Side1"]) == []
+        assert run("assistant_abc123", ["Side1"]) == []
