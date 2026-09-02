@@ -1,4 +1,4 @@
-"""LLM client for Altinity agents"""
+"""LLM client for Assistant agents"""
 import json
 import asyncio
 from langfuse import get_client

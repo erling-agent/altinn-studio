@@ -118,27 +118,27 @@ _WRAPUP_NOTICE = (
 # fires 20 reads in one turn, we never run more than this many in
 # parallel — protects shared resources (filesystem, network)
 # and bounds the spike a single turn can put on the host.  Tunable via
-# `ALTINITY_MAX_TOOL_USE_CONCURRENCY` to make tuning a config change
+# `ASSISTANT_MAX_TOOL_USE_CONCURRENCY` to make tuning a config change
 # rather than a code change.
 _DEFAULT_MAX_TOOL_USE_CONCURRENCY = 10
 
 
 def _max_tool_use_concurrency() -> int:
-    raw = os.getenv("ALTINITY_MAX_TOOL_USE_CONCURRENCY")
+    raw = os.getenv("ASSISTANT_MAX_TOOL_USE_CONCURRENCY")
     if not raw:
         return _DEFAULT_MAX_TOOL_USE_CONCURRENCY
     try:
         value = int(raw)
     except ValueError:
         log.warning(
-            "ALTINITY_MAX_TOOL_USE_CONCURRENCY=%r is not an integer — falling back to %d",
+            "ASSISTANT_MAX_TOOL_USE_CONCURRENCY=%r is not an integer — falling back to %d",
             raw,
             _DEFAULT_MAX_TOOL_USE_CONCURRENCY,
         )
         return _DEFAULT_MAX_TOOL_USE_CONCURRENCY
     if value < 1:
         log.warning(
-            "ALTINITY_MAX_TOOL_USE_CONCURRENCY=%d is below 1 — clamping to 1",
+            "ASSISTANT_MAX_TOOL_USE_CONCURRENCY=%d is below 1 — clamping to 1",
             value,
         )
         return 1
@@ -472,7 +472,7 @@ async def _dispatch_tools(
     Concurrency rules:
         - Contiguous concurrency-safe tools run as one parallel batch,
           gated by a semaphore so we never exceed
-          `ALTINITY_MAX_TOOL_USE_CONCURRENCY` simultaneous calls.
+          `ASSISTANT_MAX_TOOL_USE_CONCURRENCY` simultaneous calls.
         - The first unsafe tool acts as a serialization boundary: it
           runs after any pending safe batch and on its own.
         - Subsequent safe tools after an unsafe one form a new batch

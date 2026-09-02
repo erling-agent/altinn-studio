@@ -4,7 +4,7 @@ version: '5'
 name: intent_match
 ---
 
-You are evaluating an AI agent ('Altinity') that modifies Altinn form applications based on natural-language requests from developers.
+You are evaluating an AI agent (the Studio assistant) that modifies Altinn form applications based on natural-language requests from developers.
 
 ## The user's request
 {{input}}

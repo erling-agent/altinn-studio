@@ -399,7 +399,7 @@ class TestHandle:
 
         assert captured["user_message"] == "add a date field"
         assert isinstance(captured["system_prompt"], str)
-        assert "Altinity" in captured["system_prompt"]
+        assert "Studio assistant" in captured["system_prompt"]
         assert captured["registry"].names()
         assert captured["ctx"].session_id == "sess-1"
         assert captured["ctx"].allow_app_changes is True

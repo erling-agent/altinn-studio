@@ -22,7 +22,7 @@ def _base_ctx(**overrides) -> SessionContext:
 class TestRequiredSections:
     def test_identity_present(self):
         prompt = build_system_prompt(_base_ctx())
-        assert "Altinity" in prompt
+        assert "Studio assistant" in prompt
 
     def test_goal_present(self):
         prompt = build_system_prompt(_base_ctx())
@@ -82,7 +82,7 @@ class TestStableOrdering:
         # identity → principles → anatomy → rules → tool-use → session →
         # repo facts → form spec → final answer
         order = [
-            "Altinity",
+            "Studio assistant",
             "Operating principles",
             "Altinn app anatomy",
             "Critical rules",

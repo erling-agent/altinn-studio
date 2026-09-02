@@ -220,7 +220,7 @@ The same engine is available to the agent as a `preview_render_check`
 loop tool, so a run can verify its own work after
 `commit_session_branch`. It is off unless `PREVIEW_CHECK_ENABLED=true`
 is set **in the agent container's environment** (`.env.docker`, then
-`docker compose up -d altinity-agents`). Setting it in
+`docker compose up -d assistant`). Setting it in
 `benchmarks/.env` does nothing, because the tool runs inside the agent,
 not in the runner.
 

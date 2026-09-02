@@ -4,7 +4,7 @@ version: '4'
 name: faithful_summary
 ---
 
-You are auditing the final report of an AI agent ('Altinity') that modifies Altinn form applications.
+You are auditing the final report of an AI agent (the Studio assistant) that modifies Altinn form applications.
 
 ## The user's request
 {{input}}

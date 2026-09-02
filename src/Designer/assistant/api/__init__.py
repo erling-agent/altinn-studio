@@ -1,1 +1,1 @@
-"""API package for Altinity Agents"""
+"""API package for Assistant Agents"""

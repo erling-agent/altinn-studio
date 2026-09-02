@@ -750,11 +750,11 @@ class TestConcurrency:
 
     async def test_safe_batch_respects_concurrency_cap(self, ctx, monkeypatch):
         """Even when the model fires more safe tools than the cap,
-        we never run more than `ALTINITY_MAX_TOOL_USE_CONCURRENCY` of
+        we never run more than `ASSISTANT_MAX_TOOL_USE_CONCURRENCY` of
         them at once.  Verified by observing the peak simultaneous
         in-flight count."""
 
-        monkeypatch.setenv("ALTINITY_MAX_TOOL_USE_CONCURRENCY", "2")
+        monkeypatch.setenv("ASSISTANT_MAX_TOOL_USE_CONCURRENCY", "2")
 
         inflight = 0
         peak = 0

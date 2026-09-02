@@ -1,5 +1,5 @@
 [project]
-name = "altinity-agents"
+name = "altinn-assistant"
 version = "0.1.0"
 description = "Agent service that enables users to develop Altinn apps with natural language"
 requires-python = ">=3.12"

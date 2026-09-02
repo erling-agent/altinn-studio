@@ -286,7 +286,7 @@ async def run_once(state: AgentState, event_sink: EventSink = None):
         ]
         with langfuse.start_as_current_observation(
             as_type="span",
-            name="Altinity Agent Workflow",
+            name="Assistant Agent Workflow",
             input={
                 "user_goal": str(state.user_goal)[:500],
                 "repo_path": str(state.repo_path),

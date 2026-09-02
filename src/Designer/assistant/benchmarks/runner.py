@@ -35,7 +35,7 @@ from .lf_api import LangfuseApi
 from .rubric import RUBRIC_VERSION, build_rubric_from_dir
 
 DEFAULT_DATASET = "Benchmarks/large-pdf"
-WORKFLOW_TRACE_NAME = "Altinity Agent Workflow"
+WORKFLOW_TRACE_NAME = "Assistant Agent Workflow"
 POLL_INTERVAL_SECONDS = 10
 WORKFLOW_TIMEOUT_SECONDS = 30 * 60
 
@@ -375,7 +375,7 @@ def cmd_run(args: argparse.Namespace) -> None:
                 comment=f"workflow status={status.get('status')} success={status.get('success')}",
             )
         ]
-        with tempfile.TemporaryDirectory(prefix="altinity-bench-") as tmp:
+        with tempfile.TemporaryDirectory(prefix="assistant-bench-") as tmp:
             clone = _clone_result_branch(session_id, Path(tmp))
             if clone is not None:
                 app = load_app(clone)

@@ -1,5 +1,5 @@
 """
-Altinity Agent API Server
+Studio Assistant API Server
 Provides API interface for the Studio Assistant agent
 """
 
@@ -82,12 +82,12 @@ async def lifespan(app: FastAPI):
     yield  # ---- application is running ----
 
     # --- Shutdown ---
-    logger.info("Shutting down Altinity Agent API...")
+    logger.info("Shutting down Studio Assistant API...")
 
 
 # Create FastAPI app
 app = FastAPI(
-    title="Altinity Agent API",
+    title="Studio Assistant API",
     description="API for Altinn Studio AI agents",
     version="2.0.0",
     lifespan=lifespan,
@@ -124,7 +124,7 @@ async def health_check():
 if __name__ == "__main__":
     import uvicorn
 
-    logger.info(f"Starting Altinity Agent API on {config.API_HOST}:{config.API_PORT}")
+    logger.info(f"Starting Studio Assistant API on {config.API_HOST}:{config.API_PORT}")
     uvicorn.run(
         app,
         host=config.API_HOST,

@@ -1,10 +1,10 @@
-# Altinity: AI Agent for Altinn Studio
+# Studio assistant: AI Agent for Altinn Studio
 
 An AI agent that modifies Altinn Studio applications through natural language instructions.
 
-## What is Altinity?
+## What is the Studio assistant?
 
-Altinity is a multi-agent system powered by LangGraph that understands Altinn Studio development patterns. It can autonomously generate, validate, and apply code changes to your applications - or answer questions about Altinn concepts without making changes.
+The Studio assistant is a multi-agent system powered by LangGraph that understands Altinn Studio development patterns. It can autonomously generate, validate, and apply code changes to your applications - or answer questions about Altinn concepts without making changes.
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ Altinity is a multi-agent system powered by LangGraph that understands Altinn St
 cp .env.example .env.docker
 # Edit .env.docker with your API keys
 
-# 2. Start Altinity
+# 2. Start the assistant
 docker-compose up
 ```
 
@@ -33,7 +33,7 @@ pip install -r requirements.txt
 cp .env.example .env
 # Edit .env with your API keys
 
-# 3. Start Altinity
+# 3. Start the assistant
 python -m uvicorn api.main:app --host 0.0.0.0 --port 8071 --reload
 ```
 
@@ -203,7 +203,7 @@ This is also why the attachment spotlighting above is implemented in code. A sec
 ## Project Structure
 
 ```
-altinity-agents/
+assistant/
 ├── api/                  # FastAPI server
 │   ├── routes/           # Endpoints: agent, websocket, token_usage, traces
 │   └── main.py           # Application entry point

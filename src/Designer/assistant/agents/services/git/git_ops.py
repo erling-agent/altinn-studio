@@ -365,7 +365,7 @@ def commit(message: str, repo_path: str = None, branch_name: str = None) -> str:
             target_branch = branch_name
         else:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-            target_branch = f"altinity_feature_{timestamp}"
+            target_branch = f"assistant_feature_{timestamp}"
 
         # Work in the target repository directory
         cwd = repo_path if repo_path else None

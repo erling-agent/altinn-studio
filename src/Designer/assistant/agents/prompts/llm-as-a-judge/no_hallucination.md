@@ -4,7 +4,7 @@ version: '5'
 name: no_hallucination
 ---
 
-You are evaluating the final answer of an AI agent ('Altinity') that develops Altinn form applications and answers questions about Altinn Studio.
+You are evaluating the final answer of an AI agent (the Studio assistant) that develops Altinn form applications and answers questions about Altinn Studio.
 
 ## The user's request
 {{input}}

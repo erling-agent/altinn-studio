@@ -145,7 +145,7 @@ def _main() -> None:
     parser.add_argument("--branch", required=True, help="session branch, e.g. assistant_1a2b3c4d")
     args = parser.parse_args()
 
-    with tempfile.TemporaryDirectory(prefix="altinity-preview-") as tmp:
+    with tempfile.TemporaryDirectory(prefix="assistant-preview-") as tmp:
         page_order = load_app(_clone_branch(args.branch, Path(tmp))).page_order
     if not page_order:
         sys.exit("no ordered pages found on that branch")

@@ -23,7 +23,7 @@ from shared.config.base_config import get_config
 
 from ._write_base import WriteToolMixin
 
-_STORAGE_STATE_PATH = Path(tempfile.gettempdir()) / "altinity_preview_auth.json"
+_STORAGE_STATE_PATH = Path(tempfile.gettempdir()) / "assistant_preview_auth.json"
 
 _UNAVAILABLE_GUIDANCE = (
     "This is an infrastructure limitation, not a problem with the app — "

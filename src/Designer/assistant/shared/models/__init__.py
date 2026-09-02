@@ -1,4 +1,4 @@
-"""Shared data models for the Altinity Agents system"""
+"""Shared data models for the Assistant Agents system"""
 
 from .common_models import ErrorResponse
 from .attachments import AttachmentUpload, AgentAttachment

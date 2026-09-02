@@ -1,8 +1,8 @@
 services:
-  altinity-agents:
+  assistant:
     build: .
-    image: altinity-agents
-    container_name: altinity-agents
+    image: assistant
+    container_name: assistant
     ports:
       - "8071:8071"
     env_file:

@@ -22,7 +22,7 @@ class RepoManager:
     """Manages cloning and cleanup of Altinn app repositories"""
 
     def __init__(self):
-        self.temp_dir = Path(tempfile.gettempdir()) / "altinity_repos"
+        self.temp_dir = Path(tempfile.gettempdir()) / "assistant_repos"
         self.temp_dir.mkdir(exist_ok=True)
         self.active_repos: Dict[str, Path] = {}  # session_id -> repo_path
         self.session_api_keys: Dict[str, str] = {}  # session_id -> api key

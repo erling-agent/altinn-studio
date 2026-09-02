@@ -4,7 +4,7 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
-RUN git config --system user.name "Altinity Agent" && \
+RUN git config --system user.name "Studio Assistant" && \
     git config --system user.email "agent@altinn.studio"
 
 COPY requirements.txt ./

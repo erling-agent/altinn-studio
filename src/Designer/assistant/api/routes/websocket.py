@@ -2,7 +2,7 @@
 
 Architecture
 ------------
-The .NET Designer backend (AltinityProxyHub) opens a raw WebSocket to ``/ws``,
+The .NET Designer backend (AssistantProxyHub) opens a raw WebSocket to ``/ws``,
 sends a ``{"type": "session", "session_id": "...", "developer": "..."}`` message,
 and then listens for JSON frames that it forwards to the frontend via SignalR.
 

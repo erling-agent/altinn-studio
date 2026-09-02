@@ -63,14 +63,14 @@ class BaseConfig:
     PREVIEW_STUDIO_USER = os.getenv("PREVIEW_STUDIO_USER", "localgiteaadmin")
     PREVIEW_HOST_RESOLVER_RULES = os.getenv("PREVIEW_HOST_RESOLVER_RULES", "")
 
-    _DEFAULT_ATTACHMENTS_PATH = Path(tempfile.gettempdir()) / "altinity_agent_attachments"
+    _DEFAULT_ATTACHMENTS_PATH = Path(tempfile.gettempdir()) / "assistant_attachments"
     ATTACHMENTS_ROOT = Path(os.getenv("AGENT_ATTACHMENTS_PATH", str(_DEFAULT_ATTACHMENTS_PATH)))
 
     LANGFUSE_SECRET_KEY = os.getenv("LANGFUSE_SECRET_KEY")
     LANGFUSE_PUBLIC_KEY = os.getenv("LANGFUSE_PUBLIC_KEY")
     LANGFUSE_HOST = os.getenv("LANGFUSE_BASE_URL", "https://langfuse.digdir.cloud")
     LANGFUSE_ENABLED = os.getenv("LANGFUSE_ENABLED", "true").lower() == "true"
-    LANGFUSE_RELEASE = os.getenv("LANGFUSE_RELEASE", "altinity-agents-v1.1")
+    LANGFUSE_RELEASE = os.getenv("LANGFUSE_RELEASE", "assistant-v1.1")
     LANGFUSE_ENVIRONMENT = os.getenv("LANGFUSE_ENVIRONMENT", ENVIRONMENT)
     LANGFUSE_TRACE_RETENTION_DAYS = int(os.getenv("LANGFUSE_TRACE_RETENTION_DAYS", "90"))
 

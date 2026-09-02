@@ -1,6 +1,6 @@
 # Tests
 
-This directory contains the test suite for the Altinity Agents service.
+This directory contains the test suite for the Assistant Agents service.
 
 ## Running Tests
 
