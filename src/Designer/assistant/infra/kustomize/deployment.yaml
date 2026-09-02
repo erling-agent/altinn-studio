@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: altinn-altinity-agents
+  name: altinn-assistant
   annotations:
-    altinn.studio/image: altinn-altinity-agents:latest
+    altinn.studio/image: altinn-studio-assistant:latest
     altinn.studio/image-tag: latest
   labels:
-    release: altinn-altinity-agents
+    release: altinn-assistant
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: altinn-altinity-agents
+      app: altinn-assistant
   template:
     metadata:
       labels:
-        app: altinn-altinity-agents
+        app: altinn-assistant
     spec:
-      serviceAccountName: altinn-altinity-agents-sa
+      serviceAccountName: altinn-assistant-sa
       containers:
-        - name: altinn-altinity-agents
-          image: altinn-altinity-agents:latest
+        - name: altinn-assistant
+          image: altinn-studio-assistant:latest
           ports:
             - containerPort: 8071
               name: http
@@ -35,31 +35,31 @@ spec:
             - name: AZURE_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: altinn-altinity-agents-eso-secret
+                  name: altinn-assistant-eso-secret
                   key: AZURE_API_KEY
             - name: GITEA_BASE_URL
               value: "http://altinn-repositories-public"
             - name: LANGFUSE_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: altinn-altinity-agents-eso-secret
+                  name: altinn-assistant-eso-secret
                   key: LANGFUSE_SECRET_KEY
             - name: LANGFUSE_PUBLIC_KEY
               valueFrom:
                 secretKeyRef:
-                  name: altinn-altinity-agents-eso-secret
+                  name: altinn-assistant-eso-secret
                   key: LANGFUSE_PUBLIC_KEY
             - name: LANGFUSE_BASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: altinn-altinity-agents-eso-secret
+                  name: altinn-assistant-eso-secret
                   key: LANGFUSE_BASE_URL
             - name: LANGFUSE_ENABLED
               value: "true"
             - name: LANGFUSE_ENVIRONMENT
               valueFrom:
                 secretKeyRef:
-                  name: altinn-altinity-agents-eso-secret
+                  name: altinn-assistant-eso-secret
                   key: LANGFUSE_ENVIRONMENT
             - name: LANGFUSE_RELEASE
-              value: "altinity-agents-v1"
+              value: "assistant-v1"

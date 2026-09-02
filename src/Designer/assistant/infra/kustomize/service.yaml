@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: altinn-altinity-agents
+  name: altinn-assistant
 spec:
   type: ClusterIP
   ports:
@@ -10,4 +10,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: altinn-altinity-agents
+    app: altinn-assistant

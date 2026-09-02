@@ -105,8 +105,8 @@ environmentVariables:
       value: "120"
     - name: SchedulingSettings__RepositoryCleanup__CronExpression
       value: "0 0 0 * * ?"
-    - name: AltinitySettings__AgentUrl
-      value: http://altinn-altinity-agents
+    - name: AssistantSettings__AgentUrl
+      value: http://altinn-assistant
     - name: AI_CONNECTION_STRING
       valueFrom:
         secretKeyRef:
@@ -201,8 +201,8 @@ environmentVariables:
       value: "120"
     - name: SchedulingSettings__RepositoryCleanup__CronExpression
       value: "0 0 0 * * ?"
-    - name: AltinitySettings__AgentUrl
-      value: http://altinn-altinity-agents
+    - name: AssistantSettings__AgentUrl
+      value: http://altinn-assistant
     - name: AI_CONNECTION_STRING
       valueFrom:
         secretKeyRef:
@@ -295,8 +295,8 @@ environmentVariables:
       value: "120"
     - name: SchedulingSettings__RepositoryCleanup__CronExpression
       value: "0 0 0 * * ?"
-    - name: AltinitySettings__AgentUrl
-      value: http://altinn-altinity-agents
+    - name: AssistantSettings__AgentUrl
+      value: http://altinn-assistant
     - name: AI_CONNECTION_STRING
       valueFrom:
         secretKeyRef:
