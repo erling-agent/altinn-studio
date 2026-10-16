@@ -1,0 +1,205 @@
+name: Assistant runner e2e
+
+# Fork-only comparison of the two draft PRs (Altinn/altinn-studio#21133 and #21289) with real microVMs.
+on:
+  push:
+    branches: [spike/assistant-runner-e2e]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  e2e:
+    name: ${{ matrix.way }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - way: http
+            branch: feat/assistant-runner
+          - way: ssh
+            branch: feat/assistant-runner-ssh
+    env:
+      GUEST_REPOSITORY: ghcr.io/${{ github.repository_owner }}/assistant-runner-guest
+      ASSISTANT_RUNNER_URL: http://127.0.0.1:8080
+    steps:
+      - name: Check out the e2e cases
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: e2e
+          persist-credentials: false
+
+      - name: Check out ${{ matrix.branch }}
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ matrix.branch }}
+          path: repo
+          persist-credentials: false
+
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h /
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls -l /dev/kvm
+
+      - name: Log in to ghcr.io
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTOR: ${{ github.actor }}
+        run: echo "${TOKEN}" | docker login ghcr.io --username "${ACTOR}" --password-stdin
+
+      - name: Build and push the guest image
+        id: guest
+        working-directory: repo/src/AI/assistant-runner
+        run: |
+          started=$(date +%s)
+          docker buildx build --push --provenance=false --sbom=false \
+            --metadata-file "${RUNNER_TEMP}/guest.json" \
+            --tag "${GUEST_REPOSITORY}:${{ matrix.way }}-${GITHUB_SHA::10}" \
+            --file Dockerfile.guest .
+          digest="$(jq -er '."containerimage.digest"' "${RUNNER_TEMP}/guest.json")"
+          echo "image=${GUEST_REPOSITORY}@${digest}" >> "$GITHUB_OUTPUT"
+          echo "guest_image_build_seconds=$(( $(date +%s) - started ))" >> "${RUNNER_TEMP}/timings.txt"
+
+      - name: Build the coordinator image
+        working-directory: repo
+        run: |
+          started=$(date +%s)
+          docker build --tag coordinator:e2e --file src/AI/assistant-runner/Dockerfile .
+          echo "coordinator_image_build_seconds=$(( $(date +%s) - started ))" >> "${RUNNER_TEMP}/timings.txt"
+
+      - name: Export and import the prepared guest image, as the deploy and the init container do
+        env:
+          IMAGE: ${{ steps.guest.outputs.image }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          mkdir -p "${RUNNER_TEMP}"/{prepared,export-cache,cache,home}
+          started=$(date +%s)
+          docker run --rm --entrypoint /usr/local/bin/sandbox-image \
+            --env SANDBOX_CACHE_HOME=/cache --env PREPARED_IMAGE_DIRECTORY=/output \
+            --env "REGISTRY_USERNAME=${ACTOR}" --env "REGISTRY_PASSWORD=${TOKEN}" --env "SANDBOX_IMAGE=${IMAGE}" \
+            --volume "${RUNNER_TEMP}/export-cache:/cache" --volume "${RUNNER_TEMP}/prepared:/output" \
+            coordinator:e2e export
+          echo "prepared_image_export_seconds=$(( $(date +%s) - started ))" >> "${RUNNER_TEMP}/timings.txt"
+          echo "prepared_image_bytes=$(sudo du -sb "${RUNNER_TEMP}/prepared" | cut -f1)" >> "${RUNNER_TEMP}/timings.txt"
+          started=$(date +%s)
+          docker run --rm --entrypoint /usr/local/bin/sandbox-image \
+            --env SANDBOX_PROVIDER_HOME=/tmp/sandbox-provider --env SANDBOX_CACHE_HOME=/cache \
+            --env PREPARED_IMAGE_DIRECTORY=/prepared --env "SANDBOX_IMAGE=${IMAGE}" \
+            --read-only --tmpfs /tmp --cap-drop ALL --security-opt no-new-privileges \
+            --volume "${RUNNER_TEMP}/cache:/cache" --volume "${RUNNER_TEMP}/prepared:/prepared:ro" \
+            coordinator:e2e import
+          echo "prepared_image_import_seconds=$(( $(date +%s) - started ))" >> "${RUNNER_TEMP}/timings.txt"
+
+      # The restrictions of the pod: root without capabilities, a read-only root file system and /dev/kvm.
+      - name: Start the runner
+        env:
+          IMAGE: ${{ steps.guest.outputs.image }}
+        run: |
+          docker run --detach --name runner --publish 127.0.0.1:8080:8080 \
+            --device /dev/kvm --cap-drop ALL --security-opt no-new-privileges --read-only --tmpfs /tmp \
+            --volume "${RUNNER_TEMP}/home:/var/lib/altinn/sandbox-provider" \
+            --volume "${RUNNER_TEMP}/cache:/var/cache/altinn/sandbox" \
+            --env "SANDBOX_IMAGE=${IMAGE}" --env POD_IP=127.0.0.1 \
+            coordinator:e2e
+          for _ in $(seq 1 60); do
+            curl -fsS http://127.0.0.1:8080/health && break
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:8080/health
+          sudo find "${RUNNER_TEMP}/home" -mindepth 1 -maxdepth 2 | sort > "${RUNNER_TEMP}/home-fresh.txt"
+          ( while docker stats --no-stream --format '{{.MemUsage}}' runner >> "${RUNNER_TEMP}/memory.txt" 2>/dev/null; do sleep 1; done ) &
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+
+      - name: Install the assistant
+        working-directory: repo/src/AI/assistant
+        run: uv sync --frozen
+
+      - name: Run the jobs that must not reach other hosts
+        working-directory: repo/src/AI/assistant
+        run: |
+          uv run --no-sync python "${GITHUB_WORKSPACE}/e2e/e2e/run.py" "${GITHUB_WORKSPACE}/repo/src/App/template" \
+            "${RUNNER_TEMP}/results.json" upgrade_v8 build_v9 build_v9_again build_with_a_broken_edit
+          denials="$(docker logs runner 2>&1 | grep -c 'authorization denied' || true)"
+          echo "denials_in_normal_jobs=${denials}" >> "${RUNNER_TEMP}/timings.txt"
+          docker logs runner 2>&1 | grep 'authorization denied' || true
+          test "${denials}" -eq 0
+
+      - name: Run a build that calls an unknown host
+        working-directory: repo/src/AI/assistant
+        run: |
+          uv run --no-sync python "${GITHUB_WORKSPACE}/e2e/e2e/run.py" "${GITHUB_WORKSPACE}/repo/src/App/template" \
+            "${RUNNER_TEMP}/results.json" build_that_calls_home
+          docker logs runner 2>&1 | grep 'authorization denied' | tee "${RUNNER_TEMP}/denials.txt"
+          grep -q 'example.com' "${RUNNER_TEMP}/denials.txt"
+
+      - name: Stop the coordinator during a job
+        working-directory: repo/src/AI/assistant
+        run: |
+          uv run --no-sync python "${GITHUB_WORKSPACE}/e2e/e2e/run.py" "${GITHUB_WORKSPACE}/repo/src/App/template" \
+            "${RUNNER_TEMP}/stopped.json" upgrade_v8 &
+          job=$!
+          sleep 30
+          sudo find "${RUNNER_TEMP}/home" -mindepth 1 -maxdepth 2 | sort > "${RUNNER_TEMP}/home-during.txt"
+          docker kill runner
+          wait "${job}" || true
+          sleep 3
+          echo "--- VM processes after the stop:"
+          pgrep -fa 'msb|krun|microsandbox' | tee "${RUNNER_TEMP}/leftover.txt" || true
+          test ! -s "${RUNNER_TEMP}/leftover.txt"
+          docker start runner
+          for _ in $(seq 1 60); do
+            curl -fsS http://127.0.0.1:8080/health && break
+            sleep 1
+          done
+          sudo find "${RUNNER_TEMP}/home" -mindepth 1 -maxdepth 2 | sort > "${RUNNER_TEMP}/home-restarted.txt"
+          echo "--- Provider home during the job:"; cat "${RUNNER_TEMP}/home-during.txt"
+          echo "--- Provider home after the restart:"; cat "${RUNNER_TEMP}/home-restarted.txt"
+          diff "${RUNNER_TEMP}/home-fresh.txt" "${RUNNER_TEMP}/home-restarted.txt"
+
+      - name: Summary
+        if: always()
+        run: |
+          python3 - <<'EOF' >> "$GITHUB_STEP_SUMMARY"
+          import json, os, re
+          temp = os.environ["RUNNER_TEMP"]
+          def read(name):
+              path = os.path.join(temp, name)
+              return open(path).read() if os.path.exists(path) else ""
+          print("## ${{ matrix.way }}")
+          print("| Case | Result |\n| --- | --- |")
+          for name, result in (json.loads(read("results.json") or "{}")).items():
+              print(f"| {name} | `{json.dumps(result)}` |")
+          units = {"KiB": 2**10, "MiB": 2**20, "GiB": 2**30, "B": 1}
+          peaks = []
+          for line in read("memory.txt").splitlines():
+              match = re.match(r"([\d.]+)(GiB|MiB|KiB|B)", line.strip())
+              if match:
+                  peaks.append(float(match.group(1)) * units[match.group(2)])
+          print(f"\nPeak memory of the runner container: {max(peaks, default=0) / 2**30:.2f} GiB\n")
+          print("```\n" + read("timings.txt") + "```")
+          EOF
+          docker logs runner > "${RUNNER_TEMP}/runner.log" 2>&1 || true
+
+      - name: Upload the results
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: e2e-${{ matrix.way }}
+          path: |
+            ${{ runner.temp }}/*.json
+            ${{ runner.temp }}/*.txt
+            ${{ runner.temp }}/runner.log
