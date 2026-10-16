@@ -85,6 +85,8 @@ jobs:
           ACTOR: ${{ github.actor }}
         run: |
           mkdir -p "${RUNNER_TEMP}"/{prepared,export-cache,cache,home}
+          # On a sandbox node, root owns the hostPath folders, and the pod's root has no capabilities.
+          sudo chown 0:0 "${RUNNER_TEMP}"/{cache,home}
           started=$(date +%s)
           docker run --rm --entrypoint /usr/local/bin/sandbox-image \
             --env SANDBOX_CACHE_HOME=/cache --env PREPARED_IMAGE_DIRECTORY=/output \
