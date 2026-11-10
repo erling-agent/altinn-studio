@@ -1,0 +1,241 @@
+[
+  {
+    "id": "v8-flytting",
+    "version": "v8",
+    "goal": "Lag et skjema for flyttemelding med to sider. Side 1 heter «Personopplysninger» og har feltene Fornavn, Etternavn, Fødselsnummer, E-post og Telefonnummer. Side 2 heter «Ny adresse» og har feltene Gateadresse, Postnummer, Poststed og Flyttedato. Alle feltene er påkrevd, unntatt Telefonnummer.",
+    "rubric": {
+      "expected_pages": 2,
+      "min_input_components": 9,
+      "expected_titles": [
+        "Fornavn",
+        "Etternavn",
+        "Fødselsnummer",
+        "E-post",
+        "Telefonnummer",
+        "Gateadresse",
+        "Postnummer",
+        "Poststed",
+        "Flyttedato"
+      ],
+      "navigation_required": true
+    },
+    "checks": [
+      "bindings_in_model",
+      "required_fields",
+      "datepicker",
+      "models_generated"
+    ],
+    "required": [
+      "Fornavn",
+      "Etternavn",
+      "Fødselsnummer",
+      "E-post",
+      "Gateadresse",
+      "Postnummer",
+      "Poststed",
+      "Flyttedato"
+    ],
+    "optional": [
+      "Telefonnummer"
+    ]
+  },
+  {
+    "id": "v9-flytting",
+    "version": "v9",
+    "goal": "Lag et skjema for flyttemelding med to sider. Side 1 heter «Personopplysninger» og har feltene Fornavn, Etternavn, Fødselsnummer, E-post og Telefonnummer. Side 2 heter «Ny adresse» og har feltene Gateadresse, Postnummer, Poststed og Flyttedato. Alle feltene er påkrevd, unntatt Telefonnummer.",
+    "rubric": {
+      "expected_pages": 2,
+      "min_input_components": 9,
+      "expected_titles": [
+        "Fornavn",
+        "Etternavn",
+        "Fødselsnummer",
+        "E-post",
+        "Telefonnummer",
+        "Gateadresse",
+        "Postnummer",
+        "Poststed",
+        "Flyttedato"
+      ],
+      "navigation_required": true
+    },
+    "checks": [
+      "bindings_in_model",
+      "required_fields",
+      "datepicker",
+      "models_generated"
+    ],
+    "required": [
+      "Fornavn",
+      "Etternavn",
+      "Fødselsnummer",
+      "E-post",
+      "Gateadresse",
+      "Postnummer",
+      "Poststed",
+      "Flyttedato"
+    ],
+    "optional": [
+      "Telefonnummer"
+    ]
+  },
+  {
+    "id": "v8-barn",
+    "version": "v8",
+    "goal": "Lag en side med spørsmålet «Har du barn under 18 år?» som radioknapper med Ja og Nei. Når brukeren svarer Ja, skal feltet «Antall barn» vises. Ellers skal det være skjult.",
+    "rubric": {
+      "expected_pages": 1,
+      "min_input_components": 2,
+      "expected_titles": [
+        "Har du barn under 18 år?",
+        "Antall barn"
+      ],
+      "navigation_required": false
+    },
+    "checks": [
+      "bindings_in_model",
+      "conditional_field",
+      "models_generated"
+    ],
+    "question": "Har du barn under 18 år?",
+    "dependent": "Antall barn"
+  },
+  {
+    "id": "v9-barn",
+    "version": "v9",
+    "goal": "Lag en side med spørsmålet «Har du barn under 18 år?» som radioknapper med Ja og Nei. Når brukeren svarer Ja, skal feltet «Antall barn» vises. Ellers skal det være skjult.",
+    "rubric": {
+      "expected_pages": 1,
+      "min_input_components": 2,
+      "expected_titles": [
+        "Har du barn under 18 år?",
+        "Antall barn"
+      ],
+      "navigation_required": false
+    },
+    "checks": [
+      "bindings_in_model",
+      "conditional_field",
+      "models_generated"
+    ],
+    "question": "Har du barn under 18 år?",
+    "dependent": "Antall barn"
+  },
+  {
+    "id": "v8-sivilstand",
+    "version": "v8",
+    "goal": "Legg til en nedtrekksliste «Sivilstand» med valgene Ugift, Gift, Registrert partner, Separert, Skilt og Enke/enkemann. Legg valgene i en kodeliste, så de kan brukes i andre skjema også.",
+    "rubric": {
+      "expected_pages": 1,
+      "min_input_components": 1,
+      "expected_titles": [
+        "Sivilstand"
+      ],
+      "navigation_required": false
+    },
+    "checks": [
+      "bindings_in_model",
+      "code_list",
+      "models_generated"
+    ],
+    "list_title": "Sivilstand",
+    "options": [
+      "Ugift",
+      "Gift",
+      "Registrert partner",
+      "Separert",
+      "Skilt",
+      "Enke/enkemann"
+    ]
+  },
+  {
+    "id": "v8-bekreftelse",
+    "version": "v8",
+    "goal": "Legg til et steg i prosessen etter utfyllingen, der brukeren ser over svarene og bekrefter før innsending.",
+    "checks": [
+      "confirmation_task"
+    ]
+  },
+  {
+    "id": "v8-pdf",
+    "version": "v8",
+    "attachments": [
+      "parkering.pdf"
+    ],
+    "goal": "Lag skjemaet i vedlegget. Bruk én side for hver del av skjemaet.",
+    "rubric": {
+      "expected_pages": 3,
+      "min_input_components": 8,
+      "navigation_required": true,
+      "expected_titles": [
+        "Fullt navn",
+        "Fødselsnummer",
+        "Bostedsadresse",
+        "Telefonnummer",
+        "Registreringsnummer",
+        "Hvem eier kjøretøyet?",
+        "Ønsket startdato for tillatelsen",
+        "Jeg bekrefter at opplysningene er riktige"
+      ]
+    },
+    "checks": [
+      "bindings_in_model",
+      "models_generated",
+      "required_fields"
+    ],
+    "required": [
+      "Fullt navn",
+      "Fødselsnummer",
+      "Bostedsadresse",
+      "Registreringsnummer",
+      "Hvem eier kjøretøyet?",
+      "Ønsket startdato for tillatelsen"
+    ],
+    "optional": [
+      "Telefonnummer"
+    ]
+  },
+  {
+    "id": "v8-chat",
+    "version": "v8",
+    "seed": "v8-flytting",
+    "mode": "chat",
+    "goal": "Hvilke felt er påkrevd i skjemaet? Og hva må jeg endre for at Telefonnummer også skal være påkrevd?",
+    "checks": [
+      "chat_answer"
+    ],
+    "required": [
+      "Fornavn",
+      "Etternavn",
+      "Fødselsnummer",
+      "E-post",
+      "Gateadresse",
+      "Postnummer",
+      "Poststed",
+      "Flyttedato"
+    ]
+  },
+  {
+    "id": "v8-oppfolging",
+    "version": "v8",
+    "seed": "v8-flytting",
+    "goals": [
+      "Legg til et felt «Kommune» rett etter Poststed.",
+      "Gjør Kommune valgfritt."
+    ],
+    "checks": [
+      "bindings_in_model",
+      "models_generated",
+      "followup_kommune"
+    ]
+  },
+  {
+    "id": "v8-engelsk",
+    "version": "v8",
+    "seed": "v8-flytting",
+    "goal": "Legg til engelsk som språk i appen, og oversett alle tekstene.",
+    "checks": [
+      "english_texts"
+    ]
+  }
+]

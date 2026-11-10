@@ -1,0 +1,10 @@
+*
+!src/AI/assistant/pyproject.toml
+!src/AI/assistant/uv.lock
+!src/AI/assistant/.python-version
+!src/AI/assistant/agents/**
+!src/AI/assistant/shared/**
+!src/AI/assistant/pi/**
+!src/common/ts/layout-contract/schemas/json/**
+**/__pycache__
+src/AI/assistant/pi/runs/**

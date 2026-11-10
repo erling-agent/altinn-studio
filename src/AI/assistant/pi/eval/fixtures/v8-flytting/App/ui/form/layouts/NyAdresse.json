@@ -1,0 +1,77 @@
+{
+  "$schema": "https://altinncdn.no/toolkits/altinn-app-frontend/4/schemas/json/layout/layout.schema.v1.json",
+  "data": {
+    "hidden": false,
+    "layout": [
+      {
+        "id": "nyadresse-heading",
+        "type": "Header",
+        "size": "L",
+        "textResourceBindings": {
+          "title": "NyAdresse.heading.title"
+        }
+      },
+      {
+        "id": "gateadresse",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "NyAdresse.gateadresse.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "gateadresse"
+        },
+        "autocomplete": "street-address",
+        "required": true
+      },
+      {
+        "id": "postnummer",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "NyAdresse.postnummer.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "postnummer"
+        },
+        "autocomplete": "postal-code",
+        "required": true
+      },
+      {
+        "id": "poststed",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "NyAdresse.poststed.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "poststed"
+        },
+        "autocomplete": "address-level2",
+        "required": true
+      },
+      {
+        "id": "flyttedato",
+        "type": "Datepicker",
+        "textResourceBindings": {
+          "title": "NyAdresse.flyttedato.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "flyttedato"
+        },
+        "timeStamp": false,
+        "format": "dd.MM.yyyy",
+        "required": true
+      },
+      {
+        "id": "nyadresse-navigation",
+        "type": "NavigationButtons",
+        "showBackButton": true
+      },
+      {
+        "id": "sendinn",
+        "type": "Button",
+        "textResourceBindings": {
+          "title": "NyAdresse.sendinn.title"
+        }
+      }
+    ]
+  }
+}

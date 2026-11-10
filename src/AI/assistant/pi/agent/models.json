@@ -1,0 +1,29 @@
+{
+  "$schema": "https://pi.dev/schemas/models.schema.json",
+  "providers": {
+    "azure": {
+      "baseUrl": "https://team-altinnstudio-ai.openai.azure.com",
+      "models": [
+        {
+          "id": "gpt-6.1-terra",
+          "name": "GPT-6.1 Terra",
+          "api": "azure-openai-responses",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 272000,
+          "maxTokens": 128000,
+          "thinkingLevelMap": {
+            "off": "none",
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": null,
+            "max": null
+          },
+          "cost": { "input": 2, "output": 12, "cacheRead": 0.2, "cacheWrite": 2.5 }
+        }
+      ]
+    }
+  }
+}

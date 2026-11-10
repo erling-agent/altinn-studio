@@ -301,3 +301,16 @@ litres
 # login page; no Nordic letter or signal word on the line for the classifier
 @paths src/Designer/development/fake-ansattporten/main.go
 selv
+
+# Norwegian forms in the Studio Assistant pi spike's eval: the form that the
+# PDF fixture renders from, and the seed app's page names
+@paths src/AI/assistant/pi/eval/fixtures/**
+alle
+som
+selv
+tre
+Adresse
+
+# the name of the switch in Studio Assistant's chat, quoted in a prompt
+@paths src/AI/assistant/pi/APPEND_CHAT.md
+appen

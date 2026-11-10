@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<title>Søknad om parkeringstillatelse</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 40px; color: #111; }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  .sub { color: #444; margin-bottom: 24px; }
+  h2 { font-size: 16px; background: #e8eef5; padding: 6px 8px; margin-top: 26px; }
+  .field { margin: 10px 0 14px; }
+  .label { font-weight: bold; font-size: 13px; }
+  .line { border-bottom: 1px solid #333; height: 22px; width: 100%; }
+  .box { display: inline-block; width: 12px; height: 12px; border: 1px solid #333; margin-right: 6px; vertical-align: middle; }
+  .opt { margin-right: 22px; font-size: 13px; }
+  .note { font-size: 11px; color: #555; }
+</style>
+</head>
+<body>
+  <h1>Søknad om parkeringstillatelse for beboere</h1>
+  <div class="sub">Fyll ut alle feltene som er merket med *.</div>
+
+  <h2>Del 1: Om søkeren</h2>
+  <div class="field"><div class="label">1.1 Fullt navn *</div><div class="line"></div></div>
+  <div class="field"><div class="label">1.2 Fødselsnummer (11 siffer) *</div><div class="line"></div></div>
+  <div class="field"><div class="label">1.3 Bostedsadresse *</div><div class="line"></div></div>
+  <div class="field"><div class="label">1.4 Telefonnummer</div><div class="line"></div></div>
+
+  <h2>Del 2: Om kjøretøyet</h2>
+  <div class="field"><div class="label">2.1 Registreringsnummer *</div><div class="line"></div></div>
+  <div class="field"><div class="label">2.2 Hvem eier kjøretøyet? *</div>
+    <span class="opt"><span class="box"></span>Jeg eier det selv</span>
+    <span class="opt"><span class="box"></span>Arbeidsgiver</span>
+    <span class="opt"><span class="box"></span>Leasingselskap</span>
+  </div>
+
+  <h2>Del 3: Erklæring</h2>
+  <div class="field"><div class="label">3.1 Ønsket startdato for tillatelsen *</div><div class="line"></div></div>
+  <div class="field"><span class="box"></span><span class="label">3.2 Jeg bekrefter at opplysningene er riktige *</span></div>
+  <div class="note">Søknaden behandles innen tre uker.</div>
+</body>
+</html>
