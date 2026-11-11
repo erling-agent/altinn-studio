@@ -3,7 +3,8 @@
  *
  * - Four Altinn tools, which call the assistant's Python domain library through studio_tool.py.
  * - A path guard: file tools stay in the app, and may read the skills and the attachments. They may not
- *   write the generated model files. Bash is not confined here; the sandbox around pi is the boundary.
+ *   write the generated model files. The guard compares real paths, so a symbolic link in the app cannot
+ *   lead outside it. Bash is not confined here; the sandbox around pi is the boundary.
  * - A settle gate: the run cannot end while verify_changes fails on the changed files. It does
  *   what commit_session_branch's refusal does today, without a commit tool.
  *
@@ -15,7 +16,7 @@
  */
 
 import { execFile, execFileSync } from 'node:child_process';
-import { appendFileSync } from 'node:fs';
+import { appendFileSync, lstatSync, realpathSync } from 'node:fs';
 import path from 'node:path';
 import { Type } from '@earendil-works/pi-ai';
 import type { ExtensionAPI } from '@earendil-works/pi-coding-agent';
@@ -85,6 +86,27 @@ function inside(child: string, parent: string): boolean {
   return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative));
 }
 
+// The path after all symbolic links. An app repository can contain links, and pi's tools follow them, so the guard
+// must compare where a path really leads. A path that does not exist yet, such as a new file, takes the real path of
+// its nearest part that exists. A link that leads nowhere throws, and the guard then blocks the call, since a write
+// through it would create its target.
+function realPath(target: string): string {
+  let existing = target;
+  const rest: string[] = [];
+  for (;;) {
+    try {
+      lstatSync(existing);
+      break;
+    } catch {
+      const parent = path.dirname(existing);
+      if (parent === existing) break;
+      rest.unshift(path.basename(existing));
+      existing = parent;
+    }
+  }
+  return path.join(realpathSync(existing), ...rest);
+}
+
 const FILE_TOOLS = new Set(['read', 'write', 'edit', 'grep', 'find', 'ls']);
 const READ_ONLY_TOOLS = new Set(['read', 'grep', 'find', 'ls']);
 // The C# class and the XSD of a data model. Studio generates them, so a hand edit makes them disagree with the schema.
@@ -136,7 +158,19 @@ export default function studio(pi: ExtensionAPI) {
     if (!FILE_TOOLS.has(event.toolName)) return undefined;
 
     const target = path.resolve(ctx.cwd, String((event.input as { path?: unknown }).path ?? '.'));
-    if (!READ_ONLY_TOOLS.has(event.toolName) && GENERATED.test(path.relative(ctx.cwd, target))) {
+    let real: string;
+    let app: string;
+    try {
+      real = realPath(target);
+      app = realpathSync(ctx.cwd);
+    } catch {
+      record({ type: 'blocked', tool: event.toolName, path: target, reason: 'unresolvable' });
+      return {
+        block: true,
+        reason: `${target} is a link that leads nowhere. Work only on files under ${ctx.cwd}.`,
+      };
+    }
+    if (!READ_ONLY_TOOLS.has(event.toolName) && GENERATED.test(path.relative(app, real))) {
       record({ type: 'blocked', tool: event.toolName, path: target });
       return {
         block: true,
@@ -144,12 +178,12 @@ export default function studio(pi: ExtensionAPI) {
           'altinn_datamodel_sync generates this file from the JSON schema. Change the schema, then call it.',
       };
     }
-    if (inside(target, ctx.cwd)) return undefined;
+    if (inside(real, app)) return undefined;
     for (const readable of [SKILLS_DIR, ATTACHMENTS_DIR]) {
-      if (readable && READ_ONLY_TOOLS.has(event.toolName) && inside(target, path.resolve(readable)))
+      if (readable && READ_ONLY_TOOLS.has(event.toolName) && inside(real, realpathSync(readable)))
         return undefined;
     }
-    record({ type: 'blocked', tool: event.toolName, path: target });
+    record({ type: 'blocked', tool: event.toolName, path: target, real });
     return {
       block: true,
       reason: `${target} is outside the app. Work only on files under ${ctx.cwd}.`,
